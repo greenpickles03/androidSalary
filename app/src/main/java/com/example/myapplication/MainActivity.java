@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.myapplication.DTO.LoginRequest;
 import com.example.myapplication.DTO.LoginResponse;
 import com.example.myapplication.DTO.User;
 import com.example.myapplication.Page.CreateAccountActivity;
@@ -63,13 +64,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "Button clicked");
                 System.out.println("Username : " + username.getText());
                 System.out.println("Password : " + password.getText());
-                Call<LoginResponse> listCall = apiService.getByEmailAndPassword(Objects.requireNonNull(username.getText()).toString(),
-                        Objects.requireNonNull(password.getText()).toString());
+                LoginRequest loginRequest = new LoginRequest();
+                loginRequest.setEmail(username.getText().toString());
+                loginRequest.setPassword(password.getText().toString());
+                Call<LoginResponse> listCall = apiService.getByEmailAndPassword(loginRequest);
 
                 listCall.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        System.out.println("response: " + response);
+                        System.out.println("response: " + response.body().getMessage());
 
                         if(response.body().getMessage().equals("User with email not found")){
                             Toast.makeText(MainActivity.this,
@@ -78,10 +81,13 @@ public class MainActivity extends AppCompatActivity {
                         }else{
                             if (response.isSuccessful() && response.body() != null) {
 
+                                System.out.println("response: " + response.body());
                                 LoginResponse loginResponse = response.body();
+
 
                                 User user = loginResponse.getDetails();
                                 System.out.println(user.getFirstName() + " this is the first name");
+                                System.out.println("token: " + loginResponse.getToken());
 
                             }
                         }

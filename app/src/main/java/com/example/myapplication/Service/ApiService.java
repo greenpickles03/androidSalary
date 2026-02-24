@@ -1,5 +1,6 @@
 package com.example.myapplication.Service;
 
+import com.example.myapplication.DTO.LoginRequest;
 import com.example.myapplication.DTO.LoginResponse;
 import com.example.myapplication.DTO.User;
 
@@ -13,10 +14,8 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @GET("api/users/login")
-    Call<LoginResponse> getByEmailAndPassword(
-            @Query("email") String email,
-            @Query("password") String password);
+    @POST("api/users/login")
+    Call<LoginResponse> getByEmailAndPassword(@Body LoginRequest loginRequest);
     @GET("api/users/all")
     Call<List<User>> getAllUsers();
 
